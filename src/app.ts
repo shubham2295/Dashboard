@@ -4,6 +4,7 @@ enum ProjectStatus {
   Finished,
 }
 
+// Project type class
 class Project {
   constructor(
     public id: string,
@@ -25,6 +26,7 @@ class State<T> {
   }
 }
 
+// Added inheritance
 class ProjectState extends State<Project> {
   private projects: Project[] = [];
   private static instance: ProjectState;
@@ -56,6 +58,7 @@ class ProjectState extends State<Project> {
   }
 }
 
+// Creates singletron object
 const projectState = ProjectState.getInstance();
 
 // Input validation
