@@ -1,3 +1,15 @@
+//Drag and Drop interfaces
+interface Draggable {
+  dragStartHandler(event: DragEvent): void;
+  dragEndHandler(event: DragEvent): void;
+}
+
+interface DragTarget {
+  dragOverHandler(event: DragEvent): void;
+  dropHandler(event: DragEvent): void;
+  dragLeaveHandler(event: DragEvent): void;
+}
+
 //Project type
 enum ProjectStatus {
   Active,
@@ -26,7 +38,6 @@ class State<T> {
   }
 }
 
-// Added inheritance
 class ProjectState extends State<Project> {
   private projects: Project[] = [];
   private static instance: ProjectState;
@@ -118,7 +129,7 @@ function AutoBind(_: any, __: string, descriptor: PropertyDescriptor) {
   return adjDescriptor;
 }
 
-// Component based class
+// Component base class
 
 abstract class Component<T extends HTMLElement, U extends HTMLElement> {
   templateElement: HTMLTemplateElement;
@@ -159,7 +170,10 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
 
 // ProjectItem class
 
-class ProjectItem extends Component<HTMLUListElement, HTMLElement> {
+class ProjectItem
+  extends Component<HTMLUListElement, HTMLElement>
+  implements Draggable
+{
   private project: Project;
 
   get persons() {
@@ -178,7 +192,19 @@ class ProjectItem extends Component<HTMLUListElement, HTMLElement> {
     this.renderContent();
   }
 
-  configure(): void {}
+  @AutoBind
+  dragStartHandler(event: DragEvent): void {
+    console.log(event);
+  }
+
+  dragEndHandler(_: DragEvent): void {
+    console.log('Drag end');
+  }
+
+  configure(): void {
+    this.element.addEventListener('dragstart', this.dragStartHandler);
+    this.element.addEventListener('dragend', this.dragEndHandler);
+  }
 
   renderContent(): void {
     this.element.querySelector('h2')!.textContent = this.project.title;
